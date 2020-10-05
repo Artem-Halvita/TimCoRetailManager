@@ -49,7 +49,7 @@ namespace TRMDesktopUI.ViewModels
 
         public void LogIn()
         {
-            Console.WriteLine();
+
         }
     }
 }
