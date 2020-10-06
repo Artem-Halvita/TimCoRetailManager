@@ -35,9 +35,9 @@ namespace TRMDesktopUI.ViewModels
         }
 
 
-        private string _itemQuality;
+        private int _itemQuality;
 
-        public string ItemQuality
+        public int ItemQuality
         {
             get { return _itemQuality; }
             set
