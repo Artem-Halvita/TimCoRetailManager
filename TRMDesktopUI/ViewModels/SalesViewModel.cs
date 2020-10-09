@@ -43,9 +43,23 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
-        private BindingList<string> _cart;
+        private ProductModel _selectedProduct;
 
-        public BindingList<string> Cart
+        public ProductModel SelectedProduct
+        {
+            get { return _selectedProduct; }
+            set 
+            { 
+                _selectedProduct = value;
+                NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
+
+
+        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
+
+        public BindingList<CartItemModel> Cart
         {
             get { return _cart; }
             set
@@ -56,15 +70,16 @@ namespace TRMDesktopUI.ViewModels
         }
 
 
-        private int _itemQuality;
+        private int _itemQuantity = 1;
 
-        public int ItemQuality
+        public int ItemQuantity
         {
-            get { return _itemQuality; }
+            get { return _itemQuantity; }
             set
             {
-                _itemQuality = value;
-                NotifyOfPropertyChange(() => Products);
+                _itemQuantity = value;
+                NotifyOfPropertyChange(() => ItemQuantity);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
         }
 
@@ -72,8 +87,13 @@ namespace TRMDesktopUI.ViewModels
         {
             get
             {
-                // TODO - Replace with calculation
-                return $"0.00";
+                decimal subTotal = 0;
+
+                foreach (var item in Cart)
+                {
+                    subTotal += item.Product.RetailPrice * item.QuantityInCart;
+                }
+                return subTotal.ToString("C");
             }
         }
 
@@ -103,7 +123,12 @@ namespace TRMDesktopUI.ViewModels
                 bool output = false;
 
                 // Make sure something is selected
-                // Makr sure there is an item quantity
+                // Make sure there is an item quantity
+                
+                if(ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
+                {
+                    output = true;
+                }
 
                 return output;
             }
@@ -112,7 +137,30 @@ namespace TRMDesktopUI.ViewModels
 
         public void AddToCart()
         {
+            CartItemModel existingItem = Cart.FirstOrDefault(x => x.Product == SelectedProduct);
 
+            if (existingItem != null)
+            {
+                existingItem.QuantityInCart += ItemQuantity;
+                SelectedProduct.QuantityInStock -= ItemQuantity;
+
+                /// HACK - There should be a better way of the cart display
+                Cart.Remove(existingItem);
+                Cart.Add(existingItem);
+            }
+            else
+            {
+                CartItemModel item = new CartItemModel()
+                {
+                    Product = SelectedProduct,
+                    QuantityInCart = ItemQuantity
+                };
+                Cart.Add(item);
+            }
+
+            SelectedProduct.QuantityInStock -= ItemQuantity;
+            ItemQuantity = 1;
+            NotifyOfPropertyChange(() => SubTotal);
         }
 
         public bool CanRemoveToCart
@@ -143,7 +191,7 @@ namespace TRMDesktopUI.ViewModels
 
         public void RemoveFromCart()
         {
-
+            NotifyOfPropertyChange(() => SubTotal);
         }
     }
 }
