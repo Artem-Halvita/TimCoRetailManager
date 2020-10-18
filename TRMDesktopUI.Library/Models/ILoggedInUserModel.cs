@@ -2,7 +2,7 @@
 
 namespace TRMDesktopUI.Library.Models
 {
-    public interface ILoggedInUserData
+    public interface ILoggedInUserModel
     {
         DateTime CreatedDate { get; set; }
         string EmailAddress { get; set; }
@@ -10,5 +10,7 @@ namespace TRMDesktopUI.Library.Models
         string Id { get; set; }
         string LastName { get; set; }
         string Token { get; set; }
+
+        void LogOffUser();
     }
 }

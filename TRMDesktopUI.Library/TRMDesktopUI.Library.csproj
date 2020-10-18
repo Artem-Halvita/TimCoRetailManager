@@ -57,8 +57,8 @@
     <Compile Include="Helper\IConfigHelper.cs" />
     <Compile Include="Models\AuthenticatedUser.cs" />
     <Compile Include="Models\CartItemModel.cs" />
-    <Compile Include="Models\ILoggedInUserData.cs" />
-    <Compile Include="Models\LoggedInUserData.cs" />
+    <Compile Include="Models\ILoggedInUserModel.cs" />
+    <Compile Include="Models\LoggedInUserModel.cs" />
     <Compile Include="Api\ProductEndpoint.cs" />
     <Compile Include="Models\ProductModel.cs" />
     <Compile Include="Models\SaleDetailModel.cs" />

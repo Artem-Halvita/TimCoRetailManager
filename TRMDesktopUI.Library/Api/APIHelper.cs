@@ -14,9 +14,9 @@ namespace TRMDesktopUI.Library.Api
     public class APIHelper : IAPIHelper
     {
         private HttpClient _apiClient;
-        private ILoggedInUserData _loggedInUser;
+        private ILoggedInUserModel _loggedInUser;
 
-        public APIHelper(ILoggedInUserData loggedInUser)
+        public APIHelper(ILoggedInUserModel loggedInUser)
         {
             InitializeClient();
 
@@ -75,7 +75,7 @@ namespace TRMDesktopUI.Library.Api
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = await response.Content.ReadAsAsync<LoggedInUserData>();
+                    var result = await response.Content.ReadAsAsync<LoggedInUserModel>();
                     _loggedInUser = result; // If dont wark watch 39 minute "Getting user data part 2"
                     _loggedInUser.Token = token;
                 }
