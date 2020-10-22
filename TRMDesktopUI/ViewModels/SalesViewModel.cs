@@ -203,7 +203,6 @@ namespace TRMDesktopUI.ViewModels
             if (existingItem != null)
             {
                 existingItem.QuantityInCart += ItemQuantity;
-                SelectedProduct.QuantityInStock -= ItemQuantity;
             }
             else
             {
