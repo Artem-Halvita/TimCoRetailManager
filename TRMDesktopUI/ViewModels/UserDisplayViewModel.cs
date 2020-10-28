@@ -33,6 +33,85 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
+        private UserModel _selectedUser;
+
+        public UserModel SelectedUser
+        {
+            get { return _selectedUser; }
+            set 
+            {
+                _selectedUser = value;
+                SelectedUserName = value.Email;
+                UserRoles = new BindingList<string>(value.Roles.Select(x => x.Value).ToList());
+                LoadRoles();
+                NotifyOfPropertyChange(() => SelectedUser);
+            }
+        }
+
+        private string _selectedUserRole;
+
+        public string SelectedUserRole
+        {
+            get { return _selectedUserRole; }
+            set 
+            {
+                _selectedUserRole = value;
+                NotifyOfPropertyChange(() => SelectedUserRole);
+            }
+        }
+
+        private string _selectedAvaliableRole;
+
+        public string SelectedAvaliableRole
+        {
+            get { return _selectedAvaliableRole; }
+            set 
+            {
+                _selectedAvaliableRole = value;
+                NotifyOfPropertyChange(() => SelectedAvaliableRole);
+            }
+        }
+
+
+        private string _selectedUserName;
+
+        public string SelectedUserName
+        {
+            get 
+            { 
+                return _selectedUserName; 
+            }
+            set 
+            { 
+                _selectedUserName = value;
+                NotifyOfPropertyChange(() => SelectedUserName);
+            }
+        }
+
+        private BindingList<string> _userRoles = new BindingList<string>();
+
+        public BindingList<string> UserRoles
+        {
+            get { return _userRoles; }
+            set
+            {
+                _userRoles = value;
+                NotifyOfPropertyChange(() => UserRoles);
+            }
+        }
+
+        private BindingList<string> _avaliableRoles = new BindingList<string>();
+
+        public BindingList<string> AvaliableRoles
+        {
+            get { return _avaliableRoles; }
+            set
+            {
+                _avaliableRoles = value;
+                NotifyOfPropertyChange(() => AvaliableRoles);
+            }
+        }
+
         public UserDisplayViewModel(StatusInfoViewModel status, IWindowManager window, IUserEndpoint userEndpoint)
         {
             _status = status;
@@ -73,6 +152,35 @@ namespace TRMDesktopUI.ViewModels
         {
             var userList = await _userEndpoint.GetAll();
             Users = new BindingList<UserModel>(userList);
+        }
+
+        private async Task LoadRoles()
+        {
+            var roles = await _userEndpoint.GetAllRoles();
+
+            foreach (var role in roles)
+            {
+                if (UserRoles.IndexOf(role.Value) < 0)
+                {
+                    AvaliableRoles.Add(role.Value);
+                }
+            }
+        }
+
+        public async Task AddSelectedRole()
+        {
+            await _userEndpoint.AddUserToRole(SelectedUser.Id, SelectedAvaliableRole);
+
+            UserRoles.Add(SelectedAvaliableRole);
+            AvaliableRoles.Remove(SelectedAvaliableRole);
+        }
+
+        public async Task RemoveSelectedRole()
+        {
+            await _userEndpoint.RemoveUserFromRole(SelectedUser.Id, SelectedUserRole);
+
+            UserRoles.Remove(SelectedUserRole);
+            AvaliableRoles.Remove(SelectedUserRole);
         }
     }
 }
