@@ -179,8 +179,8 @@ namespace TRMDesktopUI.ViewModels
         {
             await _userEndpoint.RemoveUserFromRole(SelectedUser.Id, SelectedUserRole);
 
+            AvaliableRoles.Add(SelectedUserRole);
             UserRoles.Remove(SelectedUserRole);
-            AvaliableRoles.Remove(SelectedUserRole);
         }
     }
 }
