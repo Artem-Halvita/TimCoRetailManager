@@ -26,7 +26,7 @@ namespace TRMDataManager.Library.DataAccess
             // Start filling in the sale detail models we will save to the database
             List<SaleDetailDBModel> details = new List<SaleDetailDBModel>();
             ProductData products = new ProductData(_config);
-            var taxRate = ConfigHelper.GetTaxRate()/100;
+            var taxRate = ConfigHelper.GetTaxRate(_config) / 100;
 
             foreach (var item in saleInfo.SaleDetails)
             {
