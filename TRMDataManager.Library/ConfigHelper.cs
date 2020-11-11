@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace TRMDataManager.Library
 {
     public class ConfigHelper
     {
         // TODO : Move this from config to the API
-        public static decimal GetTaxRate()
+        public static decimal GetTaxRate(IConfiguration configuration)
         {
             decimal output = 0;
 
-            string rateText = ConfigurationManager.AppSettings["taxRate"];
+            string rateText = configuration["TaxRate"];
 
             bool isValidTaxRate = Decimal.TryParse(rateText, out output);
 
