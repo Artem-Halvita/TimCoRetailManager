@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using TRMApi.Services;
 using TRMDataManager.Library.DataAccess;
 using TRMDataManager.Library.Models;
 
@@ -16,19 +17,17 @@ namespace TRMApi.Controllers
     [Authorize(Roles = "Cashier")]
     public class ProductController : ControllerBase
     {
-        private readonly IConfiguration _config;
+        private readonly IProductService _productService;
 
-        public ProductController(IConfiguration config)
+        public ProductController(IProductService productService)
         {
-            _config = config;
+            _productService = productService;
         }
 
         [HttpGet]
         public List<ProductModel> Get()
         {
-            ProductData data = new ProductData(_config);
-
-            return data.GetProducts();
+            return _productService.GetProducts();
         }
     }
 }
