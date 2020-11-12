@@ -27,11 +27,11 @@ namespace TRMDataManager.Library.DataAccess
             return output;
         }
 
-        public void SaveInventoryRecord(InventoryModel item)
+        public async Task SaveInventoryRecordAsync(InventoryModel item)
         {
             SqlDataAccess sql = new SqlDataAccess(_config);
 
-            sql.SaveData("dbo.spInventory_Insert", item, "TRMData");
+            await sql.SaveDataAsync("dbo.spInventory_Insert", item, "TRMData");
         }
     }
 }
