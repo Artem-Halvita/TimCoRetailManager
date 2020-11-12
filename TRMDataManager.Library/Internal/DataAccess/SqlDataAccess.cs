@@ -37,6 +37,21 @@ namespace TRMDataManager.Library.Internal.DataAccess
             }
         }
 
+        public async Task<IEnumerable<T>> LoadDataAsync<T, U>(string storedParameter, U parameters, string connectionStringName)
+        {
+            string connectionString = GetConnectionString(connectionStringName);
+
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                //connection.Open();
+
+                var rows = await connection.QueryAsync<T>(storedParameter, parameters,
+                    commandType: CommandType.StoredProcedure);
+
+                return rows;
+            }
+        }
+
         public void SaveData<T>(string storedParameter, T parameters, string connectionStringName)
         {
             string connectionString = GetConnectionString(connectionStringName);
@@ -44,6 +59,17 @@ namespace TRMDataManager.Library.Internal.DataAccess
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
                 connection.Execute(storedParameter, parameters,
+                    commandType: CommandType.StoredProcedure);
+            }
+        }
+
+        public async Task SaveDataAsync<T>(string storedParameter, T parameters, string connectionStringName)
+        {
+            string connectionString = GetConnectionString(connectionStringName);
+
+            using (IDbConnection connection = new SqlConnection(connectionString))
+            {
+                await connection.ExecuteAsync(storedParameter, parameters,
                     commandType: CommandType.StoredProcedure);
             }
         }
