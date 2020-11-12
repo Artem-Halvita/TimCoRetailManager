@@ -28,5 +28,17 @@ namespace TRMDataManager.Library.DataAccess
 
             return output;
         }
+
+        public async Task<UserModel> GetUserByIdAsync(string id)
+        {
+            SqlDataAccess sql = new SqlDataAccess(_config);
+
+            var p = new { Id = id };
+
+            var output = await sql.LoadDataAsync<UserModel, dynamic>("dbo.spUserLookup", p, "TRMData");
+            var result = output.FirstOrDefault();
+
+            return result;
+        }
     }
 }
