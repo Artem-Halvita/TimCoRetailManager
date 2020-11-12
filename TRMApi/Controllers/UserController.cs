@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using TRMApi.Data;
 using TRMApi.Models;
+using TRMApi.Services;
 using TRMDataManager.Library.DataAccess;
 using TRMDataManager.Library.Models;
 
@@ -23,25 +24,24 @@ namespace TRMApi.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly IConfiguration _config;
+        private readonly IUserService _userService;
 
         public UserController(ApplicationDbContext context,
             UserManager<IdentityUser> userManager,
-            IConfiguration config
+            IUserService userService
             )
         {
             _context = context;
             _userManager = userManager;
-            _config = config;
+            _userService = userService;
         }
 
         [HttpGet]
-        public UserModel GetById()
+        public async Task<UserModel> GetById()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            UserData data = new UserData(_config);
 
-            return data.GetUserById(userId).First();
+            return await _userService.GetUserByIdAsync(userId);
         }
 
         [Authorize(Roles = "Admin")]

@@ -72,9 +72,11 @@ namespace TRMApi
 
             services.AddTransient<IInventoryService, InventoryService>();
             services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddTransient<IRepository<InventoryModel, int>, InventoryRepository>();
             services.AddTransient<IRepository<ProductModel, int>, ProductRepository>();
+            services.AddTransient<IRepository<UserModel, string>, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
