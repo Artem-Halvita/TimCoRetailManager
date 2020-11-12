@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using TRMDataManager.Library.DataAccess;
+using TRMApi.Services;
 using TRMDataManager.Library.Models;
 
 namespace TRMApi.Controllers
@@ -16,27 +16,25 @@ namespace TRMApi.Controllers
     [Authorize]
     public class InventoryController : ControllerBase
     {
-        private readonly IConfiguration _config;
+        private readonly IInventoryService _inventoryService;
 
-        public InventoryController(IConfiguration config)
+        public InventoryController(IInventoryService inventoryService)
         {
-            _config = config;
+            _inventoryService = inventoryService;
         }
 
         [Authorize(Roles = "Manager,Admin")]
         [HttpGet]
         public List<InventoryModel> Get()
         {
-            InventoryData data = new InventoryData(_config);
-            return data.GetInventory();
+            return _inventoryService.GetInventories();
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public void Post(InventoryModel item)
+        public async Task Post(InventoryModel inventory)
         {
-            InventoryData data = new InventoryData(_config);
-            data.SaveInventoryRecord(item);
+            await _inventoryService.AddInventoryAsync(inventory);
         }
     }
 }

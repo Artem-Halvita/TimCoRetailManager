@@ -15,6 +15,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using TRMApi.Services;
+using TRMApi.Repository;
+using TRMDataManager.Library.Models;
 
 namespace TRMApi
 {
@@ -66,6 +69,9 @@ namespace TRMApi
                         Version = "v1"
                     });
             });
+
+            services.AddTransient<IInventoryService, InventoryService>();
+            services.AddTransient<IRepository<InventoryModel, int>, InventoryRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
