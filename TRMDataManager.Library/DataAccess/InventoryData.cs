@@ -22,7 +22,7 @@ namespace TRMDataManager.Library.DataAccess
         {
             SqlDataAccess sql = new SqlDataAccess(_config);
 
-            var output = sql.LoadData<InventoryModel, dynamic>("dbo.spInventory_GetAll", new { }, "TRMData");
+            var output = sql.LoadData<InventoryModel, object>("dbo.spInventory_GetAll", new { }, "TRMData");
 
             return output;
         }

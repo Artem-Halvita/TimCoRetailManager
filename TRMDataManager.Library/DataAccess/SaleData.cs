@@ -74,7 +74,7 @@ namespace TRMDataManager.Library.DataAccess
                     sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
 
                     // Get the ID from the sale mode
-                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("spSale_Lookup", new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
+                    sale.Id = sql.LoadDataInTransaction<int, object>("spSale_Lookup", new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
 
                     // Finish filling in the sale detail models
                     foreach (var item in details)
@@ -98,7 +98,7 @@ namespace TRMDataManager.Library.DataAccess
         {
             SqlDataAccess sql = new SqlDataAccess(_config);
 
-            var output = sql.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "TRMData");
+            var output = sql.LoadData<SaleReportModel, object>("dbo.spSale_SaleReport", new { }, "TRMData");
 
             return output;
         }

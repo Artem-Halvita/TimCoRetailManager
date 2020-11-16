@@ -24,7 +24,7 @@ namespace TRMDataManager.Library.DataAccess
 
             var p = new { Id = id };
 
-            var output = sql.LoadData<UserModel, dynamic>("dbo.spUserLookup", p, "TRMData");
+            var output = sql.LoadData<UserModel, object>("dbo.spUserLookup", p, "TRMData");
 
             return output;
         }
@@ -35,7 +35,7 @@ namespace TRMDataManager.Library.DataAccess
 
             var p = new { Id = id };
 
-            var output = await sql.LoadDataAsync<UserModel, dynamic>("dbo.spUserLookup", p, "TRMData");
+            var output = await sql.LoadDataAsync<UserModel, object>("dbo.spUserLookup", p, "TRMData");
             var result = output.FirstOrDefault();
 
             return result;
