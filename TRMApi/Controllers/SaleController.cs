@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using TRMApi.Services;
 using TRMDataManager.Library.DataAccess;
 using TRMDataManager.Library.Models;
 
@@ -17,21 +18,22 @@ namespace TRMApi.Controllers
     [Authorize]
     public class SaleController : ControllerBase
     {
+        private readonly ISaleService _saleService;
         private readonly IConfiguration _config;
 
-        public SaleController(IConfiguration config)
+        public SaleController(IConfiguration config,
+                            ISaleService saleService)
         {
             _config = config;
+            _saleService = saleService;
         }
 
         [Authorize(Roles = "Cashier")]
         [HttpPost]
         public void Post(SaleModel sale)
         {
-            SaleData data = new SaleData(_config);
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            data.SaveSale(sale, userId);
+            _saleService.AddSaleAsync(sale, userId);
         }
 
         [Authorize(Roles = "Admin,Manager")]
