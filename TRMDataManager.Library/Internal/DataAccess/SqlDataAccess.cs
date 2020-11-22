@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace TRMDataManager.Library.Internal.DataAccess
 {
-    internal class SqlDataAccess : IDisposable
+    public class SqlDataAccess : IDisposable
     {
         public SqlDataAccess(IConfiguration config)
         {
@@ -97,9 +97,23 @@ namespace TRMDataManager.Library.Internal.DataAccess
             return rows;
         }
 
+        public async Task<IEnumerable<T>> LoadDataInTransactionAsync<T, U>(string storedParameter, U parameters)
+        {
+            var rows = await _connection.QueryAsync<T>(storedParameter, parameters,
+                    commandType: CommandType.StoredProcedure, transaction: _transaction);
+
+            return rows;
+        }
+
         public void SaveDataInTransaction<T>(string storedParameter, T parameters)
         {
             _connection.Execute(storedParameter, parameters,
+                    commandType: CommandType.StoredProcedure, transaction: _transaction);
+        }
+
+        public async Task SaveDataInTransactionAsync<T>(string storedParameter, T parameters)
+        {
+            await _connection.ExecuteAsync(storedParameter, parameters,
                     commandType: CommandType.StoredProcedure, transaction: _transaction);
         }
 
