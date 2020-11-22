@@ -18,6 +18,7 @@ namespace TRMApi.Services
 
         public List<ProductModel> GetProducts() => _productRepository.GetAll();
 
+        public async Task<ProductModel> GetProductByIdAsync(int productId) => await _productRepository.GetByIdAsync(productId);
         public async Task AddProductAsync(ProductModel product) => await _productRepository.InsertAsync(product);
     }
 }
