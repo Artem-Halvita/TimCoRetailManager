@@ -1,12 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using TRMApi.Data;
 using Microsoft.Extensions.Configuration;
@@ -16,8 +11,8 @@ using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TRMApi.Services;
-using TRMApi.Repository;
-using TRMDataManager.Library.Models;
+using TRMApi.Data.Repository;
+using TRMApi.Data.Models;
 
 namespace TRMApi
 {
@@ -78,7 +73,7 @@ namespace TRMApi
             services.AddTransient<IRepository<InventoryModel, int>, InventoryRepository>();
             services.AddTransient<IRepository<ProductModel, int>, ProductRepository>();
             services.AddTransient<IRepository<UserModel, string>, UserRepository>();
-            services.AddTransient<IRepository<SaleAndSaleDetailDBModel, int>, SaleRepository>();
+            services.AddTransient<ISaleRepository<SaleModel>, SaleRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

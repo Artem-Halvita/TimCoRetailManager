@@ -2,17 +2,14 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace TRMDataManager.Library.Internal.DataAccess
+namespace TRMApi.Data.Repository.DataAccess
 {
-    public class SqlDataAccess : IDisposable
+    internal class SqlDataAccess : IDisposable
     {
         public SqlDataAccess(IConfiguration config)
         {

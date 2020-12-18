@@ -1,32 +1,30 @@
-﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using TRMDataManager.Library.Internal.DataAccess;
-using TRMDataManager.Library.Models;
+using Microsoft.Extensions.Configuration;
+using TRMApi.Data.Repository.DataAccess;
+using TRMApi.Data.Models;
+using TRMApi.Services;
 
-namespace TRMDataManager.Library.DataAccess
+namespace TRMApi.Data.Repository
 {
-    public class SaleData
+    public class SaleRepository : ISaleRepository<SaleModel>
     {
-        private readonly IConfiguration _config;
+        private readonly IConfiguration _configuration;
 
-        public SaleData(IConfiguration config)
+        public SaleRepository(IConfiguration configuration)
         {
-            _config = config;
+            _configuration = configuration;
         }
 
-        public void SaveSale(SaleModel saleInfo, string cashierId)
+        public async Task InsertInTransationAsync(SaleModel saleInfo, string cashierId)
         {
             // TODO : Make this SOLID/DRY/Better
             // Start filling in the sale detail models we will save to the database
             List<SaleDetailDBModel> details = new List<SaleDetailDBModel>();
-            ProductData products = new ProductData(_config);
-            var taxRate = ConfigHelper.GetTaxRate(_config) / 100;
+            ProductRepository products = new ProductRepository(_configuration);
+            var taxRate = ConfigHelper.GetTaxRate(_configuration) / 100;
 
             foreach (var item in saleInfo.SaleDetails)
             {
@@ -37,7 +35,7 @@ namespace TRMDataManager.Library.DataAccess
                 };
 
                 // Get the information about this product
-                var productInfo = products.GetProductById(detail.ProductId);
+                var productInfo = await products.GetByIdAsync(detail.ProductId);
 
                 if (productInfo == null)
                 {
@@ -64,7 +62,7 @@ namespace TRMDataManager.Library.DataAccess
 
             sale.Total = sale.SubTotal + sale.Tax;
 
-            using (SqlDataAccess sql = new SqlDataAccess(_config))
+            using (SqlDataAccess sql = new SqlDataAccess(_configuration))
             {
                 try
                 {
@@ -96,7 +94,7 @@ namespace TRMDataManager.Library.DataAccess
 
         public List<SaleReportModel> GetSaleReport()
         {
-            SqlDataAccess sql = new SqlDataAccess(_config);
+            SqlDataAccess sql = new SqlDataAccess(_configuration);
 
             var output = sql.LoadData<SaleReportModel, object>("dbo.spSale_SaleReport", new { }, "TRMData");
 

@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using TRMApi.Repository;
-using TRMDataManager.Library;
-using TRMDataManager.Library.Models;
+using TRMApi.Data.Repository;
+using TRMApi.Data.Repository.DataAccess;
+using TRMApi.Data.Models;
 
 namespace TRMApi.Services
 {
     public class SaleService : ISaleService
     {
-        private readonly IRepository<SaleAndSaleDetailDBModel, int> _saleRepository;
+        private readonly ISaleRepository<SaleModel> _saleRepository;
         private readonly IProductService _productService;
         private readonly IConfiguration _configuration;
 
-        public SaleService(IRepository<SaleAndSaleDetailDBModel, int> saleRepository,
+        public SaleService(ISaleRepository<SaleModel> saleRepository,
                             IProductService productService,
                             IConfiguration configuration)
         {
@@ -65,13 +65,36 @@ namespace TRMApi.Services
 
             sale.Total = sale.SubTotal + sale.Tax;
 
-            SaleAndSaleDetailDBModel saleAndSaleDetail = new SaleAndSaleDetailDBModel()
+            using (SqlDataAccess sql = new SqlDataAccess(_configuration))
             {
-                Sale = sale,
-                SaleDetails = details
-            };
+                try
+                {
+                    sql.StartTransaction("TRMData");
 
-            await _saleRepository.InsertAsync(saleAndSaleDetail);
+                    // Save the sale model
+                    sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
+
+                    // Get the ID from the sale mode
+                    sale.Id = sql.LoadDataInTransaction<int, object>("spSale_Lookup", new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
+
+                    // Finish filling in the sale detail models
+                    foreach (var item in details)
+                    {
+                        item.SaleId = sale.Id;
+                        // Save the sale detail models
+                        sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
+                    }
+
+                    sql.CommitTransaction();
+                }
+                catch
+                {
+                    sql.RollbackTransaction();
+                    throw;
+                }
+            }
         }
+
+        public List<SaleReportModel> GetSaleReport() => _saleRepository.GetSaleReport();
     }
 }

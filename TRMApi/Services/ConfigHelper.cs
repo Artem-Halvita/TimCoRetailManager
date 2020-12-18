@@ -2,11 +2,10 @@
 using System.Configuration;
 using Microsoft.Extensions.Configuration;
 
-namespace TRMDataManager.Library
+namespace TRMApi.Services
 {
     public class ConfigHelper
     {
-        // TODO : Move this from config to the API
         public static decimal GetTaxRate(IConfiguration configuration)
         {
             decimal output = 0;

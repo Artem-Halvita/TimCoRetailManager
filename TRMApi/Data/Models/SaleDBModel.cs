@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TRMDataManager.Library.Models
+namespace TRMApi.Data.Models
 {
-    public class SaleReportModel
+    public class SaleDBModel
     {
-        public DateTime SaleDate { get; set; }
+        public int Id { get; set; }
+        public string CashierId { get; set; }
+        public DateTime SaleDate { get; set; } = DateTime.UtcNow;
         public decimal SubTotal { get; set; }
         public decimal Tax { get; set; }
         public decimal Total { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string EmailAddress { get; set; }
     }
 }

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using TRMApi.Data.Models;
 using TRMApi.Services;
-using TRMDataManager.Library.DataAccess;
-using TRMDataManager.Library.Models;
 
 namespace TRMApi.Controllers
 {
@@ -19,12 +13,9 @@ namespace TRMApi.Controllers
     public class SaleController : ControllerBase
     {
         private readonly ISaleService _saleService;
-        private readonly IConfiguration _config;
 
-        public SaleController(IConfiguration config,
-                            ISaleService saleService)
+        public SaleController(ISaleService saleService)
         {
-            _config = config;
             _saleService = saleService;
         }
 
@@ -41,8 +32,7 @@ namespace TRMApi.Controllers
         [HttpGet]
         public List<SaleReportModel> GetSalesReport()
         {
-            SaleData data = new SaleData(_config);
-            return data.GetSaleReport();
+            return _saleService.GetSaleReport();
         }
     }
 }

@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TRMDataManager.Library.DataAccess;
-using TRMDataManager.Library.Models;
+using TRMApi.Data.Repository.DataAccess;
+using TRMApi.Data.Models;
 
-namespace TRMApi.Repository
+namespace TRMApi.Data.Repository
 {
     public class UserRepository : IRepository<UserModel, string>
     {
@@ -19,8 +19,10 @@ namespace TRMApi.Repository
 
         public async Task<UserModel> GetByIdAsync(string id)
         {
-            UserData userData = new UserData(_configuration);
-            var result = await userData.GetUserByIdAsync(id);
+            SqlDataAccess sql = new SqlDataAccess(_configuration);
+
+            var output = await sql.LoadDataAsync<UserModel, object>("dbo.spUserLookup", new { Id = id }, "TRMData");
+            var result = output.FirstOrDefault();
 
             return result;
         }

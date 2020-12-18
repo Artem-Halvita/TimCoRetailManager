@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using TRMDataManager.Library.DataAccess;
-using TRMDataManager.Library.Models;
 using Microsoft.Extensions.Configuration;
-using TRMApi.Repository;
+using TRMApi.Data.Repository.DataAccess;
+using TRMApi.Data.Models;
 
-namespace TRMApi
+namespace TRMApi.Data.Repository
 {
     public class InventoryRepository : IRepository<InventoryModel, int>
     {
@@ -20,16 +18,18 @@ namespace TRMApi
 
         public List<InventoryModel> GetAll()
         {
-            InventoryData inventoryData = new InventoryData(_configuration);
-            var output = inventoryData.GetInventory();
+            SqlDataAccess sql = new SqlDataAccess(_configuration);
+
+            var output = sql.LoadData<InventoryModel, object>("dbo.spInventory_GetAll", new { }, "TRMData");
 
             return output;
         }
 
         public async Task InsertAsync(InventoryModel entity)
         {
-            InventoryData inventoryData = new InventoryData(_configuration);
-            await inventoryData.SaveInventoryRecordAsync(entity);
+            SqlDataAccess sql = new SqlDataAccess(_configuration);
+
+            await sql.SaveDataAsync("dbo.spInventory_Insert", entity, "TRMData");
         }
 
         public Task DeleteAsync(InventoryModel entity)

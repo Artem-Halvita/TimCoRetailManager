@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TRMDataManager.Library.DataAccess;
-using TRMDataManager.Library.Models;
+using TRMApi.Data.Repository.DataAccess;
+using TRMApi.Data.Models;
 
-namespace TRMApi.Repository
+namespace TRMApi.Data.Repository
 {
     public class ProductRepository : IRepository<ProductModel, int>
     {
@@ -19,18 +19,21 @@ namespace TRMApi.Repository
 
         public List<ProductModel> GetAll()
         {
-            ProductData productData = new ProductData(_configuration);
-            var output = productData.GetProducts();
+            SqlDataAccess sql = new SqlDataAccess(_configuration);
+
+            var output = sql.LoadData<ProductModel, object>("dbo.spProduct_GetAll", new { }, "TRMData");
 
             return output;
         }
 
-        public Task<ProductModel> GetByIdAsync(int id)
+        public async Task<ProductModel> GetByIdAsync(int id)
         {
-            ProductData productData = new ProductData(_configuration);
-            var output = productData.GetProductByIdAsync(id);
+            SqlDataAccess sql = new SqlDataAccess(_configuration);
 
-            return output;
+            var output = await sql.LoadDataAsync<ProductModel, object>("dbo.spProduct_GetById", new { Id = id }, "TRMData");
+            var result = output.FirstOrDefault();
+
+            return result;
         }
 
         public Task InsertAsync(ProductModel entity)

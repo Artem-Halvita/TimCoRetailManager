@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using TRMDataManager.Library.Models;
+using TRMApi.Data.Models;
 
 namespace TRMApi.Services
 {

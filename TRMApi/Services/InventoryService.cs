@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TRMApi.Repository;
-using TRMDataManager.Library.Models;
+using TRMApi.Data.Repository;
+using TRMApi.Data.Models;
 
 namespace TRMApi.Services
 {

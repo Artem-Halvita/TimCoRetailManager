@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using TRMApi.Services;
-using TRMDataManager.Library.Models;
+using TRMApi.Data.Models;
 
 namespace TRMApi.Controllers
 {

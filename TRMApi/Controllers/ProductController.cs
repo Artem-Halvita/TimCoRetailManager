@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using TRMApi.Data.Models;
 using TRMApi.Services;
-using TRMDataManager.Library.DataAccess;
-using TRMDataManager.Library.Models;
 
 namespace TRMApi.Controllers
 {
