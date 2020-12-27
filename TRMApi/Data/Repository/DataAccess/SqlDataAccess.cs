@@ -11,14 +11,15 @@ namespace TRMApi.Data.Repository.DataAccess
 {
     internal class SqlDataAccess : IDisposable
     {
+        private IDbConnection _connection;
+        private IDbTransaction _transaction;
+
+        private bool isClosed = false;
+        private IConfiguration _config;
+
         public SqlDataAccess(IConfiguration config)
         {
             _config = config;
-        }
-
-        string GetConnectionString(string name)
-        {
-            return _config.GetConnectionString(name);
         }
 
         public List<T> LoadData<T, U>(string storedParameter, U parameters, string connectionStringName)
@@ -58,13 +59,27 @@ namespace TRMApi.Data.Repository.DataAccess
             }
         }
 
-        private IDbConnection _connection;
-        private IDbTransaction _transaction;
-
-        public void StartTransaction(string connectionStringName)
+        public void RunInTransaction(Action<SqlDataAccess> action, string connectionStringName)
         {
             string connectionString = GetConnectionString(connectionStringName);
 
+            try
+            {
+                StartTransaction(connectionString);
+
+                action(this);
+
+                CommitTransaction();
+            }
+            catch (Exception)
+            {
+                RollbackTransaction();
+                throw;
+            }
+        }
+
+        public void StartTransaction(string connectionString)
+        {
             _connection = new SqlConnection(connectionString);
             _connection.Open();
 
@@ -87,10 +102,12 @@ namespace TRMApi.Data.Repository.DataAccess
                     commandType: CommandType.StoredProcedure, transaction: _transaction);
         }
 
-        private bool isClosed = false;
-        private IConfiguration _config;
+        private string GetConnectionString(string name)
+        {
+            return _config.GetConnectionString(name);
+        }
 
-        public void CommitTransaction()
+        private void CommitTransaction()
         {
             _transaction?.Commit();
             _connection?.Close();
@@ -98,7 +115,7 @@ namespace TRMApi.Data.Repository.DataAccess
             isClosed = true;
         }
 
-        public void RollbackTransaction()
+        private void RollbackTransaction()
         {
             _transaction?.Rollback();
             _connection?.Close();

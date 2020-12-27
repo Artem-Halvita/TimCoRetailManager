@@ -64,31 +64,22 @@ namespace TRMApi.Data.Repository
 
             using (SqlDataAccess sql = new SqlDataAccess(_configuration))
             {
-                try
+                sql.RunInTransaction(action =>
                 {
-                    sql.StartTransaction("TRMData");
-
                     // Save the sale model
-                    sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
+                    action.SaveDataInTransaction("dbo.spSale_Insert", sale);
 
                     // Get the ID from the sale mode
-                    sale.Id = sql.LoadDataInTransaction<int, object>("spSale_Lookup", new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
+                    sale.Id = action.LoadDataInTransaction<int, object>("spSale_Lookup", new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
 
                     // Finish filling in the sale detail models
                     foreach (var item in details)
                     {
                         item.SaleId = sale.Id;
                         // Save the sale detail models
-                        sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
+                        action.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
                     }
-
-                    sql.CommitTransaction();
-                }
-                catch
-                {
-                    sql.RollbackTransaction();
-                    throw;
-                }
+                }, "TRMData");
             }
         }
 
