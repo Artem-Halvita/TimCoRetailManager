@@ -16,6 +16,7 @@ namespace TRMApi.Data.Repository.DataAccess
 
         private bool isClosed = false;
         private IConfiguration _config;
+        private string _connectionString;
 
         public SqlDataAccess(IConfiguration config)
         {
@@ -104,7 +105,12 @@ namespace TRMApi.Data.Repository.DataAccess
 
         private string GetConnectionString(string name)
         {
-            return _config.GetConnectionString(name);
+            if (_connectionString == null)
+            {
+                _connectionString = _config.GetConnectionString(name);
+            }
+
+            return _connectionString;
         }
 
         private void CommitTransaction()
