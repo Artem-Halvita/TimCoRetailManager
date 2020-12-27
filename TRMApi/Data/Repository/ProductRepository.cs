@@ -21,7 +21,7 @@ namespace TRMApi.Data.Repository
         {
             SqlDataAccess sql = new SqlDataAccess(_configuration);
 
-            var output = sql.LoadData<ProductModel, object>("dbo.spProduct_GetAll", new { }, "TRMData");
+            var output = sql.LoadData<ProductModel, object>(StoredProcedures.GetProducts, new { }, ConnectionStringName.TRMData);
 
             return output;
         }
@@ -30,7 +30,7 @@ namespace TRMApi.Data.Repository
         {
             SqlDataAccess sql = new SqlDataAccess(_configuration);
 
-            var output = await sql.LoadDataAsync<ProductModel, object>("dbo.spProduct_GetById", new { Id = id }, "TRMData");
+            var output = await sql.LoadDataAsync<ProductModel, object>(StoredProcedures.GetProductById, new { Id = id }, ConnectionStringName.TRMData);
             var result = output.FirstOrDefault();
 
             return result;

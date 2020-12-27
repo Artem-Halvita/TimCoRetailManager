@@ -67,17 +67,17 @@ namespace TRMApi.Data.Repository
                 sql.RunInTransaction(action =>
                 {
                     // Save the sale model
-                    action.SaveDataInTransaction("dbo.spSale_Insert", sale);
+                    action.SaveDataInTransaction(StoredProcedures.InsertSale, sale);
 
                     // Get the ID from the sale mode
-                    sale.Id = action.LoadDataInTransaction<int, object>("spSale_Lookup", new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
+                    sale.Id = action.LoadDataInTransaction<int, object>(StoredProcedures.GetSaleByCahierIdAndDate, new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
 
                     // Finish filling in the sale detail models
                     foreach (var item in details)
                     {
                         item.SaleId = sale.Id;
                         // Save the sale detail models
-                        action.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
+                        action.SaveDataInTransaction(StoredProcedures.InsertSaleDetail, item);
                     }
                 }, "TRMData");
             }
@@ -87,7 +87,7 @@ namespace TRMApi.Data.Repository
         {
             SqlDataAccess sql = new SqlDataAccess(_configuration);
 
-            var output = sql.LoadData<SaleReportModel, object>("dbo.spSale_SaleReport", new { }, "TRMData");
+            var output = sql.LoadData<SaleReportModel, object>(StoredProcedures.SaleReport, new { }, ConnectionStringName.TRMData);
 
             return output;
         }

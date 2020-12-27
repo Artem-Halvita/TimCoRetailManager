@@ -21,7 +21,7 @@ namespace TRMApi.Data.Repository
         {
             SqlDataAccess sql = new SqlDataAccess(_configuration);
 
-            var output = await sql.LoadDataAsync<UserModel, object>("dbo.spUserLookup", new { Id = id }, "TRMData");
+            var output = await sql.LoadDataAsync<UserModel, object>(StoredProcedures.GetUserById, new { Id = id }, ConnectionStringName.TRMData);
             var result = output.FirstOrDefault();
 
             return result;

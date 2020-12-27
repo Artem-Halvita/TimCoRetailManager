@@ -20,7 +20,7 @@ namespace TRMApi.Data.Repository
         {
             SqlDataAccess sql = new SqlDataAccess(_configuration);
 
-            var output = sql.LoadData<InventoryModel, object>("dbo.spInventory_GetAll", new { }, "TRMData");
+            var output = sql.LoadData<InventoryModel, object>(StoredProcedures.GetInventories, new { }, ConnectionStringName.TRMData);
 
             return output;
         }
@@ -29,7 +29,7 @@ namespace TRMApi.Data.Repository
         {
             SqlDataAccess sql = new SqlDataAccess(_configuration);
 
-            await sql.SaveDataAsync("dbo.spInventory_Insert", entity, "TRMData");
+            await sql.SaveDataAsync(StoredProcedures.InsertInventory, entity, ConnectionStringName.TRMData);
         }
 
         public Task DeleteAsync(InventoryModel entity)
