@@ -19,6 +19,7 @@ namespace TRMDesktopUI.Models
             { 
                 _quantityInCart = value;
                 CallPropertyChanged(nameof(QuantityInCart));
+                CallPropertyChanged(nameof(DisplayText));
             }
         }
 
